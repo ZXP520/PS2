@@ -224,7 +224,7 @@ void Time_Config(void)
 {
 	//中断处理函数在stm32f10x_it.c里面
 	SysTick_Config(SystemCoreClock/1000);//72000000/1000=72000  1MS中断
-	
+/*	
 #if VERSION == 1
 	TIM4_Configuration();
 	TIM1_PWM_Init(TIM8_Period-1,30-1);  //分频。PWM频率=72000/5/1200=12Khz
@@ -232,6 +232,7 @@ void Time_Config(void)
 	TIM3_Configuration();
 	TIM5_Configuration();
 	TIM8_PWM_Init(TIM8_Period-1,30-1);	//分频。PWM频率=72000/5/1200=12Khz
+	*/
 }
 
 

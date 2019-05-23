@@ -33,6 +33,9 @@ u16 MASK[]={
 //                  输出  DO->PB13    CS->PB14  CLK->PB15
 void PS2_Init(void)
 {
+	GPIO_InitTypeDef  GPIO_InitStructure;
+	
+	/*
     //输入  DI->PB12
 	RCC->APB2ENR|=1<<3;     //使能PORTB时钟
 	GPIOB->CRH&=0XFFF0FFFF;//PB12设置成输入	默认下拉  
@@ -41,7 +44,22 @@ void PS2_Init(void)
     //  DO->PB13    CS->PB14  CLK->PB15
 	RCC->APB2ENR|=1<<3;    //使能PORTB时钟  	   	  	 
 	GPIOB->CRH&=0X000FFFFF; 
-	GPIOB->CRH|=0X33300000;//PB13、PB14、PB15 推挽输出   	 											  
+	GPIOB->CRH|=0X33300000;//PB13、PB14、PB15 推挽输出   	 	
+	*/
+	
+ 	
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOE, ENABLE);	
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15;				 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;				 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD; 		 
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+		  				 
 }
 
 //向手柄发送命令
@@ -58,9 +76,9 @@ void PS2_Cmd(u8 CMD)
 		else DO_L;
 
 		CLK_H;                        //时钟拉高
-		delay_us(50);
+		Tdelay_us(50);
 		CLK_L;
-		delay_us(50);
+		Tdelay_us(50);
 		CLK_H;
 		if(DI)
 			Data[1] = ref|Data[1];
@@ -96,12 +114,12 @@ void PS2_ReadData(void)
 		{
 			CLK_H;
 			CLK_L;
-			delay_us(50);
+			Tdelay_us(50);
 			CLK_H;
 		      if(DI)
 		      Data[byte] = ref|Data[byte];
 		}
-        delay_us(50);
+        Tdelay_us(50);
 	}
 	CS_H;	
 }

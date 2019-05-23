@@ -23,9 +23,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h" 
-#include "control.h"
-#include "Encoder.h"
-#include "include.h"
  
 void NMI_Handler(void)
 {
@@ -83,15 +80,6 @@ u32 Time_cnt=0;
 void SysTick_Handler(void)
 {
 		Time_cnt++;
-		if(Time_cnt%10==0)
-		{
-			//PID控制应该放到中断中调速
-			Get_Encoder();
-			//PID控制使能了
-			#if PID_ENABLE==1
-				RunWheelcontrol();
-			#endif
-		}
 }
 
 

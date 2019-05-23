@@ -433,19 +433,9 @@
           <GroupName>HARDWARE</GroupName>
           <Files>
             <File>
-              <FileName>timer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\TIMER\timer.c</FilePath>
-            </File>
-            <File>
               <FileName>led.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\LED\led.c</FilePath>
-            </File>
-            <File>
-              <FileName>control.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\CONTROL\control.c</FilePath>
             </File>
             <File>
               <FileName>dealdata.c</FileName>
@@ -453,24 +443,19 @@
               <FilePath>..\HARDWARE\DEALDATA\dealdata.c</FilePath>
             </File>
             <File>
-              <FileName>Encoder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\ENCODER\Encoder.c</FilePath>
-            </File>
-            <File>
-              <FileName>myiic.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\IIC\myiic.c</FilePath>
-            </File>
-            <File>
-              <FileName>gy85.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\GY85\gy85.c</FilePath>
-            </File>
-            <File>
               <FileName>include.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\HARDWARE\TIMER\include.h</FilePath>
+            </File>
+            <File>
+              <FileName>pstwo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\PS\pstwo.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\TIMER\timer.c</FilePath>
             </File>
           </Files>
         </Group>
