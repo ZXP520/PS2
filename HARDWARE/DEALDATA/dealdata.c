@@ -18,10 +18,15 @@ TX Tx;
 void DealPs2Data(void )
 {
 	s16 speed_RX=0,speed_RY=0,speed_LX=0,speed_LY=0; 
-	static u8 key=0;
+	static u8 key=0,delay_cnt=0;
 	
 	if( !PS2_RedLight()) //判断是否为红灯模式
 	{
+		if(delay_cnt>0)
+		{
+			delay_cnt--;
+			return ;
+		}
 		Tdelay_us(50000);
 		key=PS2_DataKey();
 		
@@ -123,6 +128,7 @@ void DealPs2Data(void )
 		Tx.LeftSpeed=0;		//左轮速度
 		Tx.RightSpeed=0;	//右轮速度
 		Tx.StopFlag=1;		//停车信号
+		delay_cnt=3;
 	}
 
 }
