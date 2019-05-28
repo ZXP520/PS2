@@ -18,18 +18,10 @@ TX Tx;
 void DealPs2Data(void )
 {
 	s16 speed_RX=0,speed_RY=0,speed_LX=0,speed_LY=0; 
-	static u8 key=0,delay_cnt=0;
-	
-	if( !PS2_RedLight()) //判断是否为红灯模式
+	static u8 key=0;
+	key=PS2_DataKey();
+	if( Data[1] == PS_ID) //判断是否为红灯模式(id正确)
 	{
-		if(delay_cnt>0)
-		{
-			delay_cnt--;
-			return ;
-		}
-		Tdelay_us(50000);
-		key=PS2_DataKey();
-		
 		speed_RX=PS2_AnologData(PSS_RX);
 		speed_RY=PS2_AnologData(PSS_RY);
 		speed_LX=PS2_AnologData(PSS_LX);
@@ -128,48 +120,57 @@ void DealPs2Data(void )
 		Tx.LeftSpeed=0;		//左轮速度
 		Tx.RightSpeed=0;	//右轮速度
 		Tx.StopFlag=1;		//停车信号
-		delay_cnt=3;
 	}
 
 }
 
-
-//数据测试函数
-void TestSendData_To_Ros(void)
+//转换数据共用体定义
+union TEMPDATA TempData;
+//返回数据给ROS
+void Respond_To_Ros(void)
 {
-	int Cheksum=0;//校验和
-	u8 i=0;
+	s16 Cheksum=0;//校验和
+	u8 i=0; 
 	
 	DealPs2Data();
 	
-	//0
-	TXData.InRxData[0]=DATAHEAD;  					//头
+	TXData.InRxData[0]=DATAHEAD;										//头
+#if 	VERSION==0
+	TXData.ChRxData[2]=0x0D;			//帧长度
+	TXData.ChRxData[3]=SWhellSpeed&0xFF;			//命令   小端模式先低后高
+	TXData.ChRxData[4]=(SWhellSpeed>>8)&0xFF;
+	TXData.ChRxData[5]=0x01;
+	TXData.ChRxData[6]=0x04;					//数据个数
+#elif VERSION==1
+	TXData.ChRxData[2]=0x0F;			//帧长度
+	TXData.ChRxData[3]=SChassisAttitude&0xFF;			//命令   小端模式先低后高
+	TXData.ChRxData[4]=(SChassisAttitude>>8)&0xFF;
+	TXData.ChRxData[5]=0x01;
+	TXData.ChRxData[6]=0x06;					//数据个数
+#endif
 	
-	//1-2
-	TXData.ChRxData[2]=TXDATALENTH*2;				//贞长度
-	TXData.ChRxData[3]=0x01;								//命令个数
-	TXData.ChRxData[4]=DATACMD;							//命令
-	TXData.ChRxData[5]=DATALENTH;						//数据长度
+	TempData.InTempData[0]=Tx.LeftSpeed;
+	TempData.InTempData[1]=Tx.RightSpeed;
+	TempData.InTempData[2]=Tx.FLeftSpeed;
+	TempData.InTempData[3]=Tx.FRightSpeed;
 	
-	//3-6
-	TXData.InRxData[3]=Tx.LeftSpeed;				//左轮速度
-	TXData.InRxData[4]=Tx.RightSpeed;				//右
-	TXData.InRxData[5]=Tx.FLeftSpeed;				//前左
-	TXData.InRxData[6]=Tx.FRightSpeed;			//前右
-	//7
-	TXData.ChRxData[15]=Tx.StopFlag;				//停车标志
-	TXData.ChRxData[16]=Tx.Navigation;			//导航标志
-	//8
-  TXData.InRxData[8] =Tx.IMUNum;					//陀螺仪轴数
-	
-	for(i=0;i<TXDATALENTH-1;i++)
+	switch(TXData.ChRxData[6])
 	{
-		Cheksum+=TXData.InRxData[i];
+		case 4:for(i=0;i<4;i++){TXData.ChRxData[7+i]=TempData.ChTempData[i];}break;
+		case 6:for(i=0;i<6;i++){TXData.ChRxData[7+i]=TempData.ChTempData[i];}break;
+		case 8:for(i=0;i<8;i++){TXData.ChRxData[7+i]=TempData.ChTempData[i];}break;
+		default:break;
 	}
-	//9
-	TXData.InRxData[TXDATALENTH-1]=Cheksum; //校验和
 	
+	
+	//计算校验值
+	for(i=0;i<TXData.ChRxData[2]-2;i++)
+	{
+		Cheksum+=TXData.ChRxData[i];
+	}
+	TXData.ChRxData[TXData.ChRxData[2]-2]=Cheksum&0xFF; //校验和
+	TXData.ChRxData[TXData.ChRxData[2]-1]=(Cheksum>>8)&0xFF;
 	//DMA串口发送数据
-	USART2_DMA_TX(TXData.ChRxData,TXData.InRxData[1]);
-	
+	USART2_DMA_TX(TXData.ChRxData,TXData.ChRxData[2]);
 }
+

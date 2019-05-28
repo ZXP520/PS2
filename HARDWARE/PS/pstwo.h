@@ -9,16 +9,16 @@ File：PS2驱动程序
 Author：pinggai    Version:1.0     Data:2015/05/16
 Description: PS2驱动程序
 **********************************************************/	 
-#define DI   PBin(12)           //PB12  输入
+#define DI   PCin(10)           //PB12  输入
 
-#define DO_H PBout(13)=1        //命令位高
-#define DO_L PBout(13)=0        //命令位低
+#define DO_H PCout(11)=1        //命令位高
+#define DO_L PCout(11)=0        //命令位低
 
-#define CS_H PBout(14)=1       //CS拉高
-#define CS_L PBout(14)=0       //CS拉低
+#define CS_H PCout(12)=1       //CS拉高
+#define CS_L PCout(12)=0       //CS拉低
 
-#define CLK_H PBout(15)=1      //时钟拉高
-#define CLK_L PBout(15)=0      //时钟拉低
+#define CLK_H PDout(2)=1      //时钟拉高
+#define CLK_L PDout(2)=0      //时钟拉低
 
 
 //These are our button constants
@@ -51,9 +51,10 @@ Description: PS2驱动程序
 #define PSS_LX 7
 #define PSS_LY 8
 
+#define PS_ID  0X73
 
 
-extern u8 Data[9];
+extern u8  Data[9];
 extern u16 MASK[16];
 extern u16 Handkey;
 

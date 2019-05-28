@@ -29,36 +29,28 @@ u16 MASK[]={
     PSB_PINK
 	};	//按键值与按键明
 
-//手柄接口初始化    输入  DI->PB12 
-//                  输出  DO->PB13    CS->PB14  CLK->PB15
+//手柄接口初始化    输入  DI->PC10 
+//                  输出  DO->PC11    CS->PC12  CLK->PD2
 void PS2_Init(void)
 {
 	GPIO_InitTypeDef  GPIO_InitStructure;
 	
-	/*
-    //输入  DI->PB12
-	RCC->APB2ENR|=1<<3;     //使能PORTB时钟
-	GPIOB->CRH&=0XFFF0FFFF;//PB12设置成输入	默认下拉  
-	GPIOB->CRH|=0X00080000;   
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC|RCC_APB2Periph_GPIOD, ENABLE);	
 
-    //  DO->PB13    CS->PB14  CLK->PB15
-	RCC->APB2ENR|=1<<3;    //使能PORTB时钟  	   	  	 
-	GPIOB->CRH&=0X000FFFFF; 
-	GPIOB->CRH|=0X33300000;//PB13、PB14、PB15 推挽输出   	 	
-	*/
-	
- 	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOE, ENABLE);	
-
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15;				 
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11|GPIO_Pin_12;				 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;				 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;				 
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;				 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD; 		 
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
 		  				 
 }
 
@@ -145,7 +137,7 @@ u8 PS2_DataKey()
 //得到一个摇杆的模拟量	 范围0~256
 u8 PS2_AnologData(u8 button)
 {
-	return Data[button];
+		return Data[button];
 }
 
 //清除数据缓冲区

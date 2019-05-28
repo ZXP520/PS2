@@ -24,7 +24,6 @@ static void Stm32_Init(void)
 int main(void)
  {		
 	static u32 Time_1MS=0,Time_5MS=0,Time_10MS=0,Time_20MS=0,Time_100MS=0,Time_500MS=0,Time_1000MS=0;
-	static u8 time_cnt=0;
 	Stm32_Init();
  	while(1)
 	{
@@ -59,7 +58,8 @@ int main(void)
 		if(Time_cnt-Time_100MS>=100)
 		{
 			//TestSendData_To_Ros();
-			TestSendData_To_Ros();
+			//TestSendData_To_Ros();
+			Respond_To_Ros();
 			Time_100MS=Time_cnt;
 		}
 		if(Time_cnt-Time_500MS>500)
