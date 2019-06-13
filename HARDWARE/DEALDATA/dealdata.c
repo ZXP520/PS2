@@ -97,9 +97,10 @@ void DealPs2Data(void )
 			default:break;
 		}
 		
-		Tx.LeftSpeed=speed_LX;		  //X轴速度
-		Tx.RightSpeed=speed_LY;		  //Y轴速度
-		Tx.FLeftSpeed=speed_RX;		  //角速度
+		Tx.FLeftSpeed=speed_LX;		  //X轴速度
+		Tx.FRightSpeed=speed_LY;		  //Y轴速度
+		Tx.LeftSpeed=speed_RX*100/2;		  //角速度 0-100
+		Tx.RightSpeed=key;							//扩展功能键
 		
 		
 		if(speed_LX==0&&speed_LY==0&&speed_RX==0)
@@ -119,6 +120,8 @@ void DealPs2Data(void )
 		
 		Tx.LeftSpeed=0;		//左轮速度
 		Tx.RightSpeed=0;	//右轮速度
+		Tx.FLeftSpeed=0;
+		Tx.FRightSpeed=0;
 		Tx.StopFlag=1;		//停车信号
 	}
 
@@ -142,17 +145,18 @@ void Respond_To_Ros(void)
 	TXData.ChRxData[5]=0x01;
 	TXData.ChRxData[6]=0x04;					//数据个数
 #elif VERSION==1
-	TXData.ChRxData[2]=0x0F;			//帧长度
+	TXData.ChRxData[2]=0X11;//0x0F;			//帧长度
 	TXData.ChRxData[3]=SChassisAttitude&0xFF;			//命令   小端模式先低后高
 	TXData.ChRxData[4]=(SChassisAttitude>>8)&0xFF;
 	TXData.ChRxData[5]=0x01;
-	TXData.ChRxData[6]=0x06;					//数据个数
+	TXData.ChRxData[6]=0x08;//0x06;					//数据个数
 #endif
 	
-	TempData.InTempData[0]=Tx.LeftSpeed;
-	TempData.InTempData[1]=Tx.RightSpeed;
-	TempData.InTempData[2]=Tx.FLeftSpeed;
-	TempData.InTempData[3]=Tx.FRightSpeed;
+	TempData.InTempData[0]=Tx.FLeftSpeed;
+	TempData.InTempData[1]=Tx.FRightSpeed;
+	TempData.InTempData[2]=Tx.LeftSpeed;
+	TempData.InTempData[3]=Tx.RightSpeed;
+	
 	
 	switch(TXData.ChRxData[6])
 	{

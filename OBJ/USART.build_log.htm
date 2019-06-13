@@ -27,7 +27,14 @@ Project File Date:  05/20/2019
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 1 (build 106)', folder: 'D:\keil5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-"..\OBJ\USART.axf" - 0 Error(s), 0 Warning(s).
+compiling dealdata.c...
+..\HARDWARE\DEALDATA\dealdata.c(20): warning:  #550-D: variable "speed_RY" was set but never used
+        s16 speed_RX=0,speed_RY=0,speed_LX=0,speed_LY=0; 
+..\HARDWARE\DEALDATA\dealdata.c: 1 warning, 0 errors
+linking...
+Program Size: Code=12656 RO-data=336 RW-data=124 ZI-data=2476  
+FromELF: creating hex file...
+"..\OBJ\USART.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   D:\项目\ROS全向轮小车\PS2\USER\RTE
